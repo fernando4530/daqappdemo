@@ -7,7 +7,6 @@
  */
 
 import React, { useState } from 'react';
-import wifi from 'react-native-android-wifi';
 import WifiManager from "react-native-wifi-reborn";
 
 import {
@@ -28,10 +27,7 @@ import {
 
 import {
   Header,
-  LearnMoreLinks,
   Colors,
-  DebugInstructions,
-  ReloadInstructions
 } from 'react-native/Libraries/NewAppScreen';
 
 
@@ -66,16 +62,16 @@ class App extends React.Component {
     super(props);
     this.state = {
       items: [{
-        lavel: "asd",
-        capabilities: "asd",
-        timestamp: "asd",
-        frequency: "asd",
-        BSSID: "asd",
-        SSID: "asd"
+        lavel: "",
+        capabilities: "",
+        timestamp: "",
+        frequency: "",
+        BSSID: "",
+        SSID: ""
       }
       ],
-      ssidSelected: "any",
-      password: "any"
+      ssidSelected: "",
+      password: ""
 
     };
   }
@@ -126,8 +122,6 @@ class App extends React.Component {
 
 
   connectWifiReborn() {
-    // const ssid = "fer-wifi";
-    // const password = "abretesesamo";
     const ssid = this.state.ssidSelected;
     const password = this.state.password;
     const isWep = false;
@@ -140,11 +134,44 @@ class App extends React.Component {
       },
       () => {
         console.log("Connection failed!");
+        Alert.alert(
+          'Conexión',
+          'No se pudo realizar la conexión',
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') }
+          ],
+          { cancelable: false }
+        );
       }
     );
   }
 
-
+  getCurrentSSIDBorn() {
+    WifiManager.getCurrentWifiSSID().then(
+      ssid => {
+        console.log("Your current connected wifi SSID is " + ssid);
+        Alert.alert(
+          'WIFI SSID Conectado',
+          'Usted está actualmente conectado a la red Wifi: \n' + ssid,
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') }
+          ],
+          { cancelable: true }
+        );
+      },
+      () => {
+        console.log("Cannot get current SSID!");
+        Alert.alert(
+          'WIFI SSID Conectado',
+          'No es posible obtener el nombre de la red',
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') }
+          ],
+          { cancelable: true }
+        );
+      }
+    )
+  }
 
 
 
@@ -154,39 +181,31 @@ class App extends React.Component {
       .then(response => response.json())
       .then(json => {
         console.log(json);
-        // Works on both Android and iOS
         Alert.alert(
-          'Alert Title',
+          'API DAQ',
           'My Alert Msg: \n' + JSON.stringify(json),
           [
             { text: 'OK', onPress: () => console.log('OK Pressed') }
           ],
-          { cancelable: false }
+          { cancelable: true }
         );
       })
+      .catch(function(error) {
+        console.log('Hubo un problema con la petición Fetch:' + error.message);
+        const mje_error = error;
+        Alert.alert(
+          'API DAQ ERROR',
+          'Error: \n' + mje_error,
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') }
+          ],
+          { cancelable: true }
+        );
+      });
   }
 
 
   render() {
-
-
-
-    /* WIFI REBORN */
-
-
-
-    function getCurrentSSIDBorn() {
-      WifiManager.getCurrentWifiSSID().then(
-        ssid => {
-          console.log("Your current connected wifi SSID is " + ssid);
-        },
-        () => {
-          console.log("Cannot get current SSID!");
-        }
-      );
-    }
-
-
 
     return (
       <>
@@ -211,22 +230,13 @@ class App extends React.Component {
                 <Button
                   color="red"
                   title="Get Current SSID"
-                  onPress={getCurrentSSIDBorn}
+                  onPress={() => this.getCurrentSSIDBorn()}
                 />
                 <Button
                   color="red"
                   title="Load Wifi List"
                   onPress={() => this.getWifiListBorn()}
                 />
-                <Button
-                  color="red"
-                  title="NE BOTON"
-                  onPress={() => this.tick()}
-                />
-
-
-                <Text style={styles.footer}>{this.state.date}</Text>
-
 
                 <FlatList
                   data={this.state.items}
@@ -238,12 +248,13 @@ class App extends React.Component {
               <View style={styles.sectionContainer}>
                 <Text style={styles.sectionTitle}>Conectar</Text>
                 <Text style={styles.sectionDescription}>
-                  {this.state.ssidSelected}
+                  SSID: {this.state.ssidSelected}
                 </Text>
                 <TextInput
                   style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
                   onChangeText={text => this.onChangeText(text)}
                   value={this.state.password}
+                  placeholder="Password"
                 />
                 <Button
                   color="red"
