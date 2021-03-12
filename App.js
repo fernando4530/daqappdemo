@@ -348,10 +348,81 @@ class App extends React.Component {
           '\n Nombre Caudalimetro 1: ' + JSON.stringify(json.data.atributos.nombre_caudalimetro_1) +
           '\n Nombre Caudalimetro 2: ' + JSON.stringify(json.data.atributos.nombre_caudalimetro_2) +
           '\n Nombre Vehiculo: ' + JSON.stringify(json.data.atributos.nombre_vehiculo) +
-          '\n Revisión Soft: ' + JSON.stringify(json.data.atributos.revision_soft) +      
-          '\n Timestamp Actualizado: ' + JSON.stringify(json.data.atributos.timestamp_actualizado) +        
-          '\n Timestamp Actualizado: ' + JSON.stringify(json.data.atributos.timestamp_descargado) +         
-          '\n Verificacion: ' + JSON.stringify(json.data.atributos.verificacion)          
+          '\n Revisión Soft: ' + JSON.stringify(json.data.atributos.revision_soft) +
+          '\n Timestamp Actualizado: ' + JSON.stringify(json.data.atributos.timestamp_actualizado) +
+          '\n Timestamp Descargado: ' + JSON.stringify(json.data.atributos.timestamp_descargado) +
+          '\n Verificacion: ' + JSON.stringify(json.data.atributos.verificacion)
+          ,
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') }
+          ],
+          { cancelable: true }
+        );
+
+      })
+      .catch(function (error) {
+        console.log('Hubo un problema con la petición Fetch:' + error.message);
+        const mje_error = error;
+        Alert.alert(
+          'API DAQ ERROR',
+          'Error: \n' + mje_error,
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') }
+          ],
+          { cancelable: true }
+        );
+      });
+  }
+
+  getApiConfiguracionPatch() {
+    const url = 'http://10.123.45.1:3333/api/1_0/configuracion';
+    return fetch(url, {
+      method: "PATCH",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(
+        {
+          "data": {
+            "id": "1",
+            "tipo": "configuracion",
+            "atributos": {
+              "id_caudalimetro_1": "11",
+              "id_caudalimetro_2": "22",
+              "id_daq": "33",
+              "id_vehiculo": "44",
+              "nombre_caudalimetro_1": "cau11",
+              "nombre_caudalimetro_2": "cau22",
+              "nombre_vehiculo": "veh11",
+              "revision_soft": "77",
+              "timestamp_actualizado": "null",
+              "timestamp_descargado": "2021/03/12-01:33:00",
+              "verificacion": "ABCDEF1234"
+            }
+          }
+        }
+      )
+    }, 2000)
+      .then(response => response.json())
+      .then(json => {
+        console.log(json);
+        const atributos = datadaq;
+        console.log(atributos);
+        const json1 = json[0];
+        Alert.alert(
+          'API DAQ',
+          JSON.stringify(json.data.tipo) + ' ' + JSON.stringify(json.data.id) +
+          '\n ID Caudalimetro 1: ' + JSON.stringify(json.data.atributos.id_caudalimetro_1) +
+          '\n ID Caudalimetro 2: ' + JSON.stringify(json.data.atributos.id_caudalimetro_2) +
+          '\n ID DAQ: ' + JSON.stringify(json.data.atributos.id_daq) +
+          '\n ID Vehiculo: ' + JSON.stringify(json.data.atributos.id_vehiculo) +
+          '\n Nombre Caudalimetro 1: ' + JSON.stringify(json.data.atributos.nombre_caudalimetro_1) +
+          '\n Nombre Caudalimetro 2: ' + JSON.stringify(json.data.atributos.nombre_caudalimetro_2) +
+          '\n Nombre Vehiculo: ' + JSON.stringify(json.data.atributos.nombre_vehiculo) +
+          '\n Revisión Soft: ' + JSON.stringify(json.data.atributos.revision_soft) +
+          '\n Timestamp Actualizado: ' + JSON.stringify(json.data.atributos.timestamp_actualizado) +
+          '\n Timestamp Actualizado: ' + JSON.stringify(json.data.atributos.timestamp_descargado) +
+          '\n Verificacion: ' + JSON.stringify(json.data.atributos.verificacion)
           ,
           [
             { text: 'OK', onPress: () => console.log('OK Pressed') }
@@ -450,18 +521,24 @@ class App extends React.Component {
                 <Text style={styles.sectionTitle}>Test API</Text>
                 <Button
                   color="blue"
-                  title="API ENDPOINT: Ticket"
+                  title="API ENDPOINT: Ticket GET"
                   onPress={() => this.getApiTicket()}
                 />
                 <Button
                   color="blue"
-                  title="API ENDPOINT: Posición"
+                  title="API ENDPOINT: Posición GET"
                   onPress={() => this.getApiPosicion()}
                 />
                 <Button
                   color="blue"
-                  title="API ENDPOINT: Configuración"
+                  title="API ENDPOINT: Configuración GET"
                   onPress={() => this.getApiConfiguracion()}
+                />
+
+                <Button
+                  color="red"
+                  title="API ENDPOINT: Configuración PATCH"
+                  onPress={() => this.getApiConfiguracionPatch()}
                 />
 
               </View>
