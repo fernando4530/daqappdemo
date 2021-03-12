@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import WifiManager from "react-native-wifi-reborn";
 
 import {
@@ -53,7 +53,10 @@ const requestPermisionWifi = async () => {
 
 var ssidValue = "vacio";
 
+var datadaq = { "data": { "atributos": { "bateria": "LC-10", "id_daq": "1", "id_ticket": "24", "ire": "29", "latitud": 3250.4426, "longitud": 6852.3931, "pozo": "COL-NRO6", "presion": 43.21, "producto": "DP858-100%", "temperatura": 12.34, "timestamp": "2021/03/12-00:22:54", "verificacion": "5df9f63916ebf8528697b629022993e8", "volumen_agregado": 5.67 }, "id": "1", "tipo": "ticket" } }
 
+const controller = new AbortController();
+const signal = controller.signal;
 
 
 class App extends React.Component {
@@ -146,6 +149,32 @@ class App extends React.Component {
     );
   }
 
+
+  autoConnectWifiReborn() {
+    const ssid = 'AP-DAQ01';
+    const password = 'bollanddaq01';
+    const isWep = false;
+    console.log("auto conectando a: ");
+    console.log(ssid);
+    console.log(password);
+    WifiManager.connectToProtectedSSID(ssid, password, isWep).then(
+      () => {
+        console.log("Connected successfully!");
+      },
+      () => {
+        console.log("Connection failed!");
+        Alert.alert(
+          'Conexión',
+          'No se pudo realizar la conexión',
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') }
+          ],
+          { cancelable: false }
+        );
+      }
+    );
+  }
+
   getCurrentSSIDBorn() {
     WifiManager.getCurrentWifiSSID().then(
       ssid => {
@@ -175,22 +204,163 @@ class App extends React.Component {
 
 
 
+  executeAxios() {
+    console.log("excuteeee");
+    const url = 'http://10.123.45.1:3333/api/1_0/ticket';
+    axios.get(url)
+      .then(res => {
+        const persons = res.data;
+        console.log(persons);
+      })
+  }
 
-  getMoviesFromApiAsync() {
-    return fetch('https://jsonplaceholder.typicode.com/todos/1')
+
+
+  abortFetching() {
+    console.log('Now aborting');
+    // Abort.
+    controller.abort()
+  }
+
+
+  getApiTicket() {
+    // const url='https://jsonplaceholder.typicode.com/users';
+    const url = 'http://10.123.45.1:3333/api/1_0/ticket';
+    return fetch(url, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: signal, // <------ This is our AbortSignal
+    }, 2000)
       .then(response => response.json())
       .then(json => {
         console.log(json);
+        const atributos = datadaq;
+        console.log(atributos);
+        const json1 = json[0];
         Alert.alert(
           'API DAQ',
-          'My Alert Msg: \n' + JSON.stringify(json),
+          JSON.stringify(json.data.tipo) + ' ' + JSON.stringify(json.data.id) +
+          '\n Bateria: ' + JSON.stringify(json.data.atributos.bateria) +
+          '\n ID DAQ: ' + JSON.stringify(json.data.atributos.id_daq) +
+          '\n ID Ticket: ' + JSON.stringify(json.data.atributos.id_ticket) +
+          '\n IRE: ' + JSON.stringify(json.data.atributos.ire) +
+          '\n Latitud: ' + JSON.stringify(json.data.atributos.latitud) +
+          '\n Longitud: ' + JSON.stringify(json.data.atributos.longitud) +
+          '\n Pozo: ' + JSON.stringify(json.data.atributos.pozo) +
+          '\n Presion: ' + JSON.stringify(json.data.atributos.presion) +
+          '\n Producto: ' + JSON.stringify(json.data.atributos.producto) +
+          '\n Temperatura: ' + JSON.stringify(json.data.atributos.temperatura) +
+          '\n Timestamp: ' + JSON.stringify(json.data.atributos.timestamp) +
+          '\n Verificacion: ' + JSON.stringify(json.data.atributos.verificacion) +
+          '\n Volumen Agregado: ' + JSON.stringify(json.data.atributos.volumen_agregado)
+          ,
           [
             { text: 'OK', onPress: () => console.log('OK Pressed') }
           ],
           { cancelable: true }
         );
+
       })
-      .catch(function(error) {
+      .catch(function (error) {
+        console.log('Hubo un problema con la petición Fetch:' + error.message);
+        const mje_error = error;
+        Alert.alert(
+          'API DAQ ERROR',
+          'Error: \n' + mje_error,
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') }
+          ],
+          { cancelable: true }
+        );
+      });
+  }
+
+  getApiPosicion() {
+    const url = 'http://10.123.45.1:3333/api/1_0/posicion';
+    return fetch(url, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: signal, // <------ This is our AbortSignal
+    }, 2000)
+      .then(response => response.json())
+      .then(json => {
+        console.log(json);
+        Alert.alert(
+          'API DAQ',
+          JSON.stringify(json.data.tipo) + ' ' + JSON.stringify(json.data.id) +
+          '\n Latitud: ' + JSON.stringify(json.data.atributos.latitud) +
+          '\n Longitud: ' + JSON.stringify(json.data.atributos.longitud) +
+          '\n Curso: ' + JSON.stringify(json.data.atributos.curso) +
+          '\n Dato Valido: ' + JSON.stringify(json.data.atributos.dato_valido) +
+          '\n Fecha: ' + JSON.stringify(json.data.atributos.fecha) +
+          '\n Posición Valida: ' + JSON.stringify(json.data.atributos.posicion_valida) +
+          '\n Tiempo: ' + JSON.stringify(json.data.atributos.tiempo) +
+          '\n Velocidad: ' + JSON.stringify(json.data.atributos.velocidad)
+          ,
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') }
+          ],
+          { cancelable: true }
+        );
+
+      })
+      .catch(function (error) {
+        console.log('Hubo un problema con la petición Fetch:' + error.message);
+        const mje_error = error;
+        Alert.alert(
+          'API DAQ ERROR',
+          'Error: \n' + mje_error,
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') }
+          ],
+          { cancelable: true }
+        );
+      });
+  }
+
+
+  getApiConfiguracion() {
+    const url = 'http://10.123.45.1:3333/api/1_0/configuracion';
+    return fetch(url, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: signal, // <------ This is our AbortSignal
+    }, 2000)
+      .then(response => response.json())
+      .then(json => {
+        console.log(json);
+        const atributos = datadaq;
+        console.log(atributos);
+        const json1 = json[0];
+        Alert.alert(
+          'API DAQ',
+          JSON.stringify(json.data.tipo) + ' ' + JSON.stringify(json.data.id) +
+          '\n ID Caudalimetro 1: ' + JSON.stringify(json.data.atributos.id_caudalimetro_1) +
+          '\n ID Caudalimetro 2: ' + JSON.stringify(json.data.atributos.id_caudalimetro_2) +
+          '\n ID DAQ: ' + JSON.stringify(json.data.atributos.id_daq) +
+          '\n ID Vehiculo: ' + JSON.stringify(json.data.atributos.id_vehiculo) +
+          '\n Nombre Caudalimetro 1: ' + JSON.stringify(json.data.atributos.nombre_caudalimetro_1) +
+          '\n Nombre Caudalimetro 2: ' + JSON.stringify(json.data.atributos.nombre_caudalimetro_2) +
+          '\n Nombre Vehiculo: ' + JSON.stringify(json.data.atributos.nombre_vehiculo) +
+          '\n Revisión Soft: ' + JSON.stringify(json.data.atributos.revision_soft) +      
+          '\n Timestamp Actualizado: ' + JSON.stringify(json.data.atributos.timestamp_actualizado) +        
+          '\n Timestamp Actualizado: ' + JSON.stringify(json.data.atributos.timestamp_descargado) +         
+          '\n Verificacion: ' + JSON.stringify(json.data.atributos.verificacion)          
+          ,
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') }
+          ],
+          { cancelable: true }
+        );
+
+      })
+      .catch(function (error) {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
         const mje_error = error;
         Alert.alert(
@@ -261,14 +431,37 @@ class App extends React.Component {
                   title="Connect Wifi"
                   onPress={() => this.connectWifiReborn()}
                 />
+
+                <Text style={styles.sectionTitle}>Conectar Automáticamente</Text>
+                <Text style={styles.sectionDescription}>
+                  SSID: AP-DAQ01
+                </Text>
+                <Text style={styles.sectionDescription}>
+                  PASS: bollanddaq01
+                </Text>
+                <Button
+                  color="red"
+                  title="Auto Connect Wifi"
+                  onPress={() => this.autoConnectWifiReborn()}
+                />
               </View>
 
               <View style={styles.sectionContainer}>
                 <Text style={styles.sectionTitle}>Test API</Text>
                 <Button
                   color="blue"
-                  title="TEST API ENDPOINY"
-                  onPress={() => this.getMoviesFromApiAsync()}
+                  title="API ENDPOINT: Ticket"
+                  onPress={() => this.getApiTicket()}
+                />
+                <Button
+                  color="blue"
+                  title="API ENDPOINT: Posición"
+                  onPress={() => this.getApiPosicion()}
+                />
+                <Button
+                  color="blue"
+                  title="API ENDPOINT: Configuración"
+                  onPress={() => this.getApiConfiguracion()}
                 />
 
               </View>
