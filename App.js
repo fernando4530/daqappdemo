@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, { Component } from 'react';
 import WifiManager from "react-native-wifi-reborn";
 
 import {
@@ -20,46 +20,18 @@ import {
   Alert,
   PermissionsAndroid,
   FlatList,
-  Modal,
-  Pressable,
-  TextInput
+  TextInput,
+  ImageBackground,
 } from 'react-native';
 
 import {
-  Header,
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 
 
-const requestPermisionWifi = async () => {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        'title': 'Wifi networks',
-        'message': 'We need your permission in order to find wifi networks'
-      }
-    )
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log("Thank you for your permission! :)");
-    } else {
-      console.log("You will not able to retrieve wifi available networks list");
-    }
-  } catch (err) {
-    console.warn(err)
-  }
-}
 
 
-var ssidValue = "vacio";
-
-var datadaq = { "data": { "atributos": { "bateria": "LC-10", "id_daq": "1", "id_ticket": "24", "ire": "29", "latitud": 3250.4426, "longitud": 6852.3931, "pozo": "COL-NRO6", "presion": 43.21, "producto": "DP858-100%", "temperatura": 12.34, "timestamp": "2021/03/12-00:22:54", "verificacion": "5df9f63916ebf8528697b629022993e8", "volumen_agregado": 5.67 }, "id": "1", "tipo": "ticket" } }
-
-const controller = new AbortController();
-const signal = controller.signal;
-
-
-class App extends React.Component {
+class App extends Component {
 
   constructor(props) {
     super(props);
@@ -75,22 +47,30 @@ class App extends React.Component {
       ],
       ssidSelected: "",
       password: ""
-
     };
   }
 
-
-
-  tick() {
-    this.setState({
-      items: ["1", "2", "3"]
-    });
+  async requestPermisionWifi() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          'title': 'Wifi networks',
+          'message': 'We need your permission in order to find wifi networks'
+        }
+      )
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("Thank you for your permission! :)");
+      } else {
+        console.log("You will not able to retrieve wifi available networks list");
+      }
+    } catch (err) {
+      console.warn(err)
+    }
   }
 
-
   getWifiListBorn() {
-
-
+    this.requestPermisionWifi();
     const lista = WifiManager.loadWifiList().then(
       wifilist => {
         console.log("lista wifi:");
@@ -106,9 +86,7 @@ class App extends React.Component {
 
   }
 
-  openModal(item) {
-    ssidValue = item.key;
-    console.log(ssidValue);
+  selectSSID(item) {
     this.setState({
       ssidSelected: item.SSID
     });
@@ -119,10 +97,7 @@ class App extends React.Component {
     this.setState({
       password: text
     });
-    console.log(this.state.password);
-
   }
-
 
   connectWifiReborn() {
     const ssid = this.state.ssidSelected;
@@ -148,7 +123,6 @@ class App extends React.Component {
       }
     );
   }
-
 
   autoConnectWifiReborn() {
     const ssid = 'AP-DAQ01';
@@ -202,36 +176,13 @@ class App extends React.Component {
     )
   }
 
-
-
-  executeAxios() {
-    console.log("excuteeee");
-    const url = 'http://10.123.45.1:3333/api/1_0/ticket';
-    axios.get(url)
-      .then(res => {
-        const persons = res.data;
-        console.log(persons);
-      })
-  }
-
-
-
-  abortFetching() {
-    console.log('Now aborting');
-    // Abort.
-    controller.abort()
-  }
-
-
   getApiTicket() {
-    // const url='https://jsonplaceholder.typicode.com/users';
     const url = 'http://10.123.45.1:3333/api/1_0/ticket';
     return fetch(url, {
       method: "GET",
       headers: {
         'Content-Type': 'application/json',
-      },
-      signal: signal, // <------ This is our AbortSignal
+      }
     }, 2000)
       .then(response => response.json())
       .then(json => {
@@ -261,7 +212,6 @@ class App extends React.Component {
           ],
           { cancelable: true }
         );
-
       })
       .catch(function (error) {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
@@ -283,8 +233,7 @@ class App extends React.Component {
       method: "GET",
       headers: {
         'Content-Type': 'application/json',
-      },
-      signal: signal, // <------ This is our AbortSignal
+      }
     }, 2000)
       .then(response => response.json())
       .then(json => {
@@ -306,7 +255,6 @@ class App extends React.Component {
           ],
           { cancelable: true }
         );
-
       })
       .catch(function (error) {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
@@ -322,15 +270,13 @@ class App extends React.Component {
       });
   }
 
-
   getApiConfiguracion() {
     const url = 'http://10.123.45.1:3333/api/1_0/configuracion';
     return fetch(url, {
       method: "GET",
       headers: {
         'Content-Type': 'application/json',
-      },
-      signal: signal, // <------ This is our AbortSignal
+      }
     }, 2000)
       .then(response => response.json())
       .then(json => {
@@ -358,7 +304,6 @@ class App extends React.Component {
           ],
           { cancelable: true }
         );
-
       })
       .catch(function (error) {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
@@ -429,7 +374,6 @@ class App extends React.Component {
           ],
           { cancelable: true }
         );
-
       })
       .catch(function (error) {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
@@ -446,6 +390,8 @@ class App extends React.Component {
   }
 
 
+
+
   render() {
 
     return (
@@ -455,39 +401,43 @@ class App extends React.Component {
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
             style={styles.scrollView}>
-            <Header />
+            <ImageBackground
+              accessibilityRole={'image'}
+              source={require('./assets/hardware.jpg')}
+              style={styles.background}
+              imageStyle={styles.logo}>
+              <Text style={styles.text}>DAQ APP DEMO</Text>
+            </ImageBackground>
             {global.HermesInternal == null ? null : (
               <View style={styles.engine}>
                 <Text style={styles.footer}>Engine: Hermes</Text>
               </View>
             )}
             <View style={styles.body}>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Funciones WIFI</Text>
-                <Text style={styles.sectionDescription}>
-                  A continiacion se disponen las funcionalidades habilitadas para trabajar con Wifi.
-              </Text>
-
-                <Button
-                  color="red"
-                  title="Get Current SSID"
-                  onPress={() => this.getCurrentSSIDBorn()}
-                />
-                <Button
-                  color="red"
-                  title="Load Wifi List"
-                  onPress={() => this.getWifiListBorn()}
-                />
-
-                <FlatList
-                  data={this.state.items}
-                  renderItem={({ item }) => <Text onPress={() => this.openModal(item)} style={styles.item}>{item.SSID}</Text>}
-                />
-
-
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 50 }}>
+                <View style={{ marginLeft: 25, flex: 1, height: 1, backgroundColor: 'black' }} />
+                <View>
+                  <Text style={styles.separatorTitle}>WIFI FUNCTIONS</Text>
+                </View>
+                <View style={{ marginRight: 25, flex: 1, height: 1, backgroundColor: 'black' }} />
               </View>
               <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Conectar</Text>
+                <Text style={styles.sectionTitle}>List Networks</Text>
+                <View style={{ marginTop: 10, marginBottom: 10 }}>
+                  <Button
+                    color="#dc3545"
+                    title="Scan"
+                    onPress={() => this.getWifiListBorn()}
+                  />
+                </View>
+                <FlatList
+                  data={this.state.items}
+                  renderItem={({ item, index }) => <Text onPress={() => this.selectSSID(item)} style={styles.item}>{item.SSID}</Text>}
+                  keyExtractor={(item, index) => index.toString()}
+                />
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>Connect To</Text>
                 <Text style={styles.sectionDescription}>
                   SSID: {this.state.ssidSelected}
                 </Text>
@@ -497,49 +447,78 @@ class App extends React.Component {
                   value={this.state.password}
                   placeholder="Password"
                 />
-                <Button
-                  color="red"
-                  title="Connect Wifi"
-                  onPress={() => this.connectWifiReborn()}
-                />
-
-                <Text style={styles.sectionTitle}>Conectar Automáticamente</Text>
+                <View style={{ marginTop: 10, marginBottom: 10 }}>
+                  <Button
+                    color="#dc3545"
+                    title="Connect"
+                    onPress={() => this.connectWifiReborn()}
+                  />
+                </View>
+                <Text style={styles.sectionTitle}>Auto Connect</Text>
                 <Text style={styles.sectionDescription}>
                   SSID: AP-DAQ01
                 </Text>
                 <Text style={styles.sectionDescription}>
                   PASS: bollanddaq01
                 </Text>
-                <Button
-                  color="red"
-                  title="Auto Connect Wifi"
-                  onPress={() => this.autoConnectWifiReborn()}
-                />
+                <View style={{ marginTop: 10, marginBottom: 10 }}>
+                  <Button
+                    color="#dc3545"
+                    title="Connect"
+                    onPress={() => this.autoConnectWifiReborn()}
+                  />
+                </View>
+                <Text style={styles.sectionTitle}>Current Connection</Text>
+                <View style={{ marginTop: 10, marginBottom: 10 }}>
+                  <Button
+                    color="#dc3545"
+                    title="Check"
+                    onPress={() => this.getCurrentSSIDBorn()}
+                  />
+                </View>
               </View>
 
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 50 }}>
+                <View style={{ marginLeft: 25, flex: 1, height: 1, backgroundColor: 'black' }} />
+                <View>
+                  <Text style={styles.separatorTitle}>API TEST</Text>
+                </View>
+                <View style={{ marginRight: 25, flex: 1, height: 1, backgroundColor: 'black' }} />
+              </View>
               <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Test API</Text>
-                <Button
-                  color="blue"
-                  title="API ENDPOINT: Ticket GET"
-                  onPress={() => this.getApiTicket()}
-                />
-                <Button
-                  color="blue"
-                  title="API ENDPOINT: Posición GET"
-                  onPress={() => this.getApiPosicion()}
-                />
-                <Button
-                  color="blue"
-                  title="API ENDPOINT: Configuración GET"
-                  onPress={() => this.getApiConfiguracion()}
-                />
+                <View style={{ marginTop: 10, marginBottom: 10 }}>
+                  <Button
+                    style={{ marginTop: 10, marginBottom: 10 }}
+                    color="#007bff"
+                    title="GET: Ticket"
+                    onPress={() => this.getApiTicket()}
+                  />
+                </View>
+                <View style={{ marginTop: 5, marginBottom: 5 }}>
+                  <Button
+                    style={{ marginTop: 100, marginBottom: 10 }}
+                    color="#007bff"
+                    title="GET: Posicion"
+                    onPress={() => this.getApiPosicion()}
+                  />
+                </View>
+                <View style={{ marginTop: 10, marginBottom: 10 }}>
+                  <Button
+                    color="#007bff"
+                    title="GET: Configuracion"
+                    onPress={() => this.getApiConfiguracion()}
+                  />
+                </View>
+                <View style={{ marginTop: 10, marginBottom: 10 }}>
+                  <Button
+                    color="#17a2b8"
+                    title="PATCH: Configuracion"
+                    onPress={() => this.getApiConfiguracionPatch()}
+                  />
+                </View>
 
-                <Button
-                  color="red"
-                  title="API ENDPOINT: Configuración PATCH"
-                  onPress={() => this.getApiConfiguracionPatch()}
-                />
+                <View style={{ marginTop: 50 }}>
+                </View>
 
               </View>
             </View>
@@ -562,10 +541,16 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   sectionContainer: {
-    marginTop: 32,
+    marginTop: 25,
     paddingHorizontal: 24,
   },
+  separatorTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: Colors.black,
+  },
   sectionTitle: {
+    marginTop: 25,
     fontSize: 24,
     fontWeight: '600',
     color: Colors.black,
@@ -640,8 +625,34 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center"
-  }
+  },
 
+  //header local
+  background: {
+    paddingBottom: 40,
+    paddingTop: 96,
+    paddingHorizontal: 32,
+    backgroundColor: Colors.lighter,
+  },
+  logo: {
+    opacity: 0.3,
+    overflow: 'visible',
+    resizeMode: 'cover',
+    /*
+     * These negative margins allow the image to be offset similarly across screen sizes and component sizes.
+     *
+     * The source logo.png image is 512x512px, so as such, these margins attempt to be relative to the
+     * source image's size.
+     */
+    marginLeft: -128,
+    marginBottom: -192,
+  },
+  text: {
+    fontSize: 40,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: Colors.black,
+  }
 });
 
 
