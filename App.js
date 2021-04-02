@@ -8,6 +8,7 @@
 
 import React, { Component } from 'react';
 import WifiManager from "react-native-wifi-reborn";
+import SystemSetting from 'react-native-system-setting'
 
 import {
   SafeAreaView,
@@ -22,6 +23,8 @@ import {
   FlatList,
   TextInput,
   ImageBackground,
+  Platform,
+  Switch,
 } from 'react-native';
 
 import {
@@ -46,8 +49,10 @@ class App extends Component {
       }
       ],
       ssidSelected: "",
-      password: ""
+      password: "",
+      switchValue: false,
     };
+    this.getWifiStatus()
   }
 
   async requestPermisionWifi() {
@@ -389,8 +394,57 @@ class App extends Component {
       });
   }
 
+  switchWifiDevice(value) {
+    const ApiVersion = Platform.constants['Version'];
+    console.log("enablewifi");
+    if (ApiVersion >= 29) {
+      console.log("API > 29")
+      this.switchOnStatus();
+    } else {
+      console.log("API < 29")
+      if (value) {
+        WifiManager.setEnabled(value);
+        Alert.alert(
+          'Wifi Device',
+          'TURN ON',
+          [],
+          { cancelable: true }
+        );
+      } else {
+        WifiManager.setEnabled(value);
+        Alert.alert(
+          'Wifi Device',
+          'TURN OFF',
+          [],
+          { cancelable: true }
+        );
+      };
+      this.setState({ switchValue: value });
+    }
+  }
 
+  switchOnStatus() {
+    SystemSetting.isWifiEnabled().then((enable) => {
+      const state = enable ? true : false;
+      console.log('Current wifi is ' + state);
+      SystemSetting.switchWifi(() => {
+        console.log('switch wifi successfully:');
+        this.getWifiStatus();
+      });
+    });
+  }
 
+  toggleSwitch = (value) => {
+    console.log('Switch 1 is: ' + value);
+    this.switchWifiDevice(value);
+  }
+
+  async getWifiStatus() {
+    const enabled = await WifiManager.isEnabled();
+    console.log("estado wifi:" + enabled);
+    this.setState({ switchValue: enabled })
+    return enabled;
+  }
 
   render() {
 
@@ -420,6 +474,16 @@ class App extends Component {
                   <Text style={styles.separatorTitle}>WIFI FUNCTIONS</Text>
                 </View>
                 <View style={{ marginRight: 25, flex: 1, height: 1, backgroundColor: 'black' }} />
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>WIFI Status</Text>
+                <View style={styles.switchStyle}>
+                  <Switch
+                    trackColor={{ false: "#767577", true: "#b2dbb8" }}
+                    thumbColor={this.state.switchValue ? "#3bff5a" : "#f4f3f4"}
+                    onValueChange={this.toggleSwitch}
+                    value={this.state.switchValue} />
+                </View>
               </View>
               <View style={styles.sectionContainer}>
                 <Text style={styles.sectionTitle}>List Networks</Text>
@@ -572,7 +636,6 @@ const styles = StyleSheet.create({
     paddingRight: 12,
     textAlign: 'right',
   },
-
   // listview
   container: {
     flex: 1,
@@ -583,7 +646,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     height: 44,
   },
-
   //modal
   centeredView: {
     flex: 1,
@@ -626,7 +688,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center"
   },
-
   //header local
   background: {
     paddingBottom: 40,
@@ -652,6 +713,13 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     color: Colors.black,
+  },
+  switchStyle: {
+    marginTop: 10, 
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }]
   }
 });
 
