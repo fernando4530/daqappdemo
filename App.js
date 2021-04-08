@@ -72,6 +72,7 @@ class App extends Component {
   }
 
   getWifiListBorn() {
+    this.checkLocation();
     this.requestPermisionWifi();
     const lista = WifiManager.loadWifiList().then(
       (wifilist) => {
@@ -81,8 +82,8 @@ class App extends Component {
           items: wifilist,
         });
       },
-      () => {
-        console.log('Cannot get current SSID!');
+      (error) => {
+        console.log(error);
       },
     );
   }
@@ -101,6 +102,7 @@ class App extends Component {
   }
 
   connectWifiReborn() {
+    this.checkLocation();
     const ssid = this.state.ssidSelected;
     const password = this.state.password;
     const isWep = false;
@@ -111,8 +113,8 @@ class App extends Component {
       () => {
         console.log('Connected successfully!');
       },
-      () => {
-        console.log('Connection failed!');
+      (error) => {
+        console.log(error);
         Alert.alert(
           'Conexión',
           'No se pudo realizar la conexión',
@@ -124,6 +126,7 @@ class App extends Component {
   }
 
   autoConnectWifiReborn() {
+    this.checkLocation();
     const ssid = 'AP-DAQ01';
     const password = 'bollanddaq01';
     const isWep = false;
@@ -459,6 +462,18 @@ class App extends Component {
     console.log('estado wifi:' + enabled);
     this.setState({switchValue: enabled});
     return enabled;
+  }
+
+  checkLocation() {
+    SystemSetting.isLocationEnabled().then((enable) => {
+      const state = enable ? true : false;
+      console.log('Current location is ' + state);
+      if (!state) {
+        SystemSetting.switchLocation(() => {
+          console.log('switch location successfully');
+        });
+      }
+    });
   }
 
   render() {
