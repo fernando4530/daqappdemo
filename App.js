@@ -71,7 +71,7 @@ class App extends Component {
     }
   }
 
-  getWifiListBorn() {
+  getWifiList() {
     this.checkLocation();
     this.requestPermisionWifi();
     const lista = WifiManager.loadWifiList().then(
@@ -101,7 +101,8 @@ class App extends Component {
     });
   }
 
-  connectWifiReborn() {
+  connectWifi() {
+    WifiManager.disconnect();
     this.checkLocation();
     const ssid = this.state.ssidSelected;
     const password = this.state.password;
@@ -125,7 +126,8 @@ class App extends Component {
     );
   }
 
-  autoConnectWifiReborn() {
+  autoConnectWifi() {
+    WifiManager.disconnect();
     this.checkLocation();
     const ssid = 'AP-DAQ01';
     const password = 'bollanddaq01';
@@ -149,7 +151,7 @@ class App extends Component {
     );
   }
 
-  getCurrentSSIDBorn() {
+  getCurrentSSID() {
     WifiManager.getCurrentWifiSSID().then(
       (ssid) => {
         console.log('Your current connected wifi SSID is ' + ssid);
@@ -344,7 +346,7 @@ class App extends Component {
       });
   }
 
-  patchApiConfiguracionPatch() {
+  patchApiConfiguracion() {
     const url = 'http://10.123.45.1:3333/api/1_0/configuracion';
     return fetch(
       url,
@@ -378,7 +380,6 @@ class App extends Component {
       .then((response) => response.json())
       .then((json) => {
         console.log(json);
-        const json1 = json[0];
         Alert.alert(
           'API DAQ',
           JSON.stringify(json.data.tipo) +
@@ -490,6 +491,7 @@ class App extends Component {
               style={styles.background}
               imageStyle={styles.logo}>
               <Text style={styles.text}>DAQ APP DEMO</Text>
+              <Text style={styles.versionStyle}>v1.2.0</Text>
             </ImageBackground>
             {global.HermesInternal == null ? null : (
               <View style={styles.engine}>
@@ -540,7 +542,7 @@ class App extends Component {
                   <Button
                     color="#dc3545"
                     title="Scan"
-                    onPress={() => this.getWifiListBorn()}
+                    onPress={() => this.getWifiList()}
                   />
                 </View>
                 <FlatList
@@ -570,7 +572,7 @@ class App extends Component {
                   <Button
                     color="#dc3545"
                     title="Connect"
-                    onPress={() => this.connectWifiReborn()}
+                    onPress={() => this.connectWifi()}
                   />
                 </View>
                 <Text style={styles.sectionTitle}>Auto Connect</Text>
@@ -582,7 +584,7 @@ class App extends Component {
                   <Button
                     color="#dc3545"
                     title="Connect"
-                    onPress={() => this.autoConnectWifiReborn()}
+                    onPress={() => this.autoConnectWifi()}
                   />
                 </View>
                 <Text style={styles.sectionTitle}>Current Connection</Text>
@@ -590,7 +592,7 @@ class App extends Component {
                   <Button
                     color="#dc3545"
                     title="Check"
-                    onPress={() => this.getCurrentSSIDBorn()}
+                    onPress={() => this.getCurrentSSID()}
                   />
                 </View>
               </View>
@@ -649,7 +651,7 @@ class App extends Component {
                   <Button
                     color="#17a2b8"
                     title="PATCH: Configuracion"
-                    onPress={() => this.patchApiConfiguracionPatch()}
+                    onPress={() => this.patchApiConfiguracion()}
                   />
                 </View>
 
@@ -789,6 +791,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    transform: [{scaleX: 1.5}, {scaleY: 1.5}],
+  },
+  versionStyle: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
     transform: [{scaleX: 1.5}, {scaleY: 1.5}],
   },
 });
