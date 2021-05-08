@@ -379,6 +379,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.black,
   },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
   background: {
     paddingBottom: 40,
     paddingTop: 96,
