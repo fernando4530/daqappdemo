@@ -89,6 +89,10 @@ class App extends Component {
     });
   };
 
+  async checkIsEnabledWifi() {
+    WifiService.checkIsEnabledWifi();
+  }
+
   // AUHTENTICATION
   async onLogout() {
     AuthService.logout();
@@ -116,6 +120,10 @@ class App extends Component {
 
   setConfiguracion() {
     APIService.setConfiguracion();
+  }
+
+  getRecorridos() {
+    APIService.getRecorridos();
   }
 
   render() {
@@ -184,6 +192,13 @@ class App extends Component {
                 title={'Logout'}
                 color={constants.RED_COLOR}
                 onPress={this.onLogout.bind(this)}
+              />
+            </View>
+            <View style={styles.buttonLoginContainer}>
+              <Button
+                title={'Turn Off WIFI'}
+                color={constants.GREEN_COLOR}
+                onPress={this.checkIsEnabledWifi.bind(this)}
               />
             </View>
           </View>
@@ -346,6 +361,13 @@ class App extends Component {
                 color={constants.BLUE_COLOR}
                 title="Set Configuracion"
                 onPress={() => this.setConfiguracion()}
+              />
+            </View>
+            <View style={{marginTop: 10, marginBottom: 10}}>
+              <Button
+                color={constants.BLUE_COLOR}
+                title="Get Recorridos"
+                onPress={() => this.getRecorridos()}
               />
             </View>
             <View style={{marginTop: 50}}></View>

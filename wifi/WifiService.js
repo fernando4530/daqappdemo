@@ -144,6 +144,13 @@ class WifiService {
       }
     });
   }
+
+  async checkIsEnabledWifi() {
+    const result = await this.getWifiStatus();
+    result
+      ? this.switchWifiDevice()
+      : Alert.alert('WIFI: Ya se encuentra deshabilitado');
+  }
 }
 
 export default new WifiService();

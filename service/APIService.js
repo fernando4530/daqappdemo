@@ -4,6 +4,8 @@ import HeaderUtil from '../util/HeaderUtil';
 const API_URL_TICKET = 'http://10.123.45.1:3333/api/1_0/ticket';
 const API_URL_POSICION = 'http://10.123.45.1:3333/api/1_0/posicion';
 const API_URL_CONFIGURATION = 'http://10.123.45.1:3333/api/1_0/configuracion';
+const API_URL_RECORRIDOS =
+  'http://10.123.45.1:3333/api/1_0/recorridos/clave?id_empresa=101&id_sucursal=202&id_base=303&punto_origen=404&nro_ire=505&origen=Sistema';
 
 class APIService {
   async getTicket() {
@@ -11,7 +13,6 @@ class APIService {
     var headers = new Headers();
     headers.set('Authorization', athorozationHeader.Authorization);
     headers.set('Content-Type', 'application/json');
-    console.log(headers);
 
     return fetch(API_URL_TICKET, {
       method: 'GET',
@@ -19,12 +20,9 @@ class APIService {
     })
       .then((response) => response.json())
       .then((json) => {
-        console.log('OK TICKET');
-        console.log(json);
         if (json.error) {
           Alert.alert(json.error.msg);
         } else {
-          Alert.alert('API OK!');
           Alert.alert(
             'API DAQ',
             JSON.stringify(json.data.tipo) +
@@ -78,18 +76,13 @@ class APIService {
     var headers = new Headers();
     headers.set('Authorization', athorozationHeader.Authorization);
     headers.set('Content-Type', 'application/json');
-    console.log(headers);
-    return fetch(
-      API_URL_POSICION,
-      {
-        method: 'GET',
-        headers: headers,
-      },
-      2000,
-    )
+
+    return fetch(API_URL_POSICION, {
+      method: 'GET',
+      headers: headers,
+    })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
         if (json.error) {
           Alert.alert(json.error.msg);
         } else {
@@ -136,18 +129,13 @@ class APIService {
     var headers = new Headers();
     headers.set('Authorization', athorozationHeader.Authorization);
     headers.set('Content-Type', 'application/json');
-    console.log(headers);
-    return fetch(
-      API_URL_CONFIGURATION,
-      {
-        method: 'GET',
-        headers: headers,
-      },
-      2000,
-    )
+
+    return fetch(API_URL_CONFIGURATION, {
+      method: 'GET',
+      headers: headers,
+    })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
         if (json.error) {
           Alert.alert(json.error.msg);
         } else {
@@ -200,37 +188,32 @@ class APIService {
     var headers = new Headers();
     headers.set('Authorization', athorozationHeader.Authorization);
     headers.set('Content-Type', 'application/json');
-    console.log(headers);
-    return fetch(
-      API_URL_CONFIGURATION,
-      {
-        method: 'PATCH',
-        headers: headers,
-        body: JSON.stringify({
-          data: {
-            id: '1',
-            tipo: 'configuracion',
-            atributos: {
-              id_caudalimetro_1: '11',
-              id_caudalimetro_2: '22',
-              id_daq: '33',
-              id_vehiculo: '44',
-              nombre_caudalimetro_1: 'cau11',
-              nombre_caudalimetro_2: 'cau22',
-              nombre_vehiculo: 'veh11',
-              revision_soft: '77',
-              timestamp_actualizado: 'null',
-              timestamp_descargado: '2021/03/12-01:33:00',
-              verificacion: 'ABCDEF1234',
-            },
+
+    return fetch(API_URL_CONFIGURATION, {
+      method: 'PATCH',
+      headers: headers,
+      body: JSON.stringify({
+        data: {
+          id: '1',
+          tipo: 'configuracion',
+          atributos: {
+            id_caudalimetro_1: '11',
+            id_caudalimetro_2: '22',
+            id_daq: '33',
+            id_vehiculo: '44',
+            nombre_caudalimetro_1: 'cau11',
+            nombre_caudalimetro_2: 'cau22',
+            nombre_vehiculo: 'veh11',
+            revision_soft: '77',
+            timestamp_actualizado: 'null',
+            timestamp_descargado: '2021/03/12-01:33:00',
+            verificacion: 'ABCDEF1234',
           },
-        }),
-      },
-      2000,
-    )
+        },
+      }),
+    })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
         if (json.error) {
           Alert.alert(json.error.msg);
         } else {
@@ -264,6 +247,36 @@ class APIService {
             [{text: 'OK', onPress: () => console.log('OK Pressed')}],
             {cancelable: true},
           );
+        }
+      })
+      .catch(function (error) {
+        console.log('Hubo un problema con la petición Fetch:' + error.message);
+        const mje_error = error;
+        Alert.alert(
+          'API DAQ ERROR',
+          'Error: \n' + mje_error,
+          [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+          {cancelable: true},
+        );
+      });
+  }
+
+  async getRecorridos() {
+    const athorozationHeader = await HeaderUtil.authHeader();
+    var headers = new Headers();
+    headers.set('Authorization', athorozationHeader.Authorization);
+    headers.set('Content-Type', 'application/json');
+
+    return fetch(API_URL_RECORRIDOS, {
+      method: 'GET',
+      headers: headers,
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.error) {
+          Alert.alert(json.error.msg);
+        } else {
+          Alert.alert(json);
         }
       })
       .catch(function (error) {
