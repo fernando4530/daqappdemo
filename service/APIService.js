@@ -276,7 +276,18 @@ class APIService {
         if (json.error) {
           Alert.alert(json.error.msg);
         } else {
-          Alert.alert(json);
+          Alert.alert(
+            'API DAQ',
+            JSON.stringify(json.data.tipo) +
+              ' ' +
+              JSON.stringify(json.data.id) +
+              '\n Descargado: ' +
+              JSON.stringify(json.data.descargado) +
+              '\n Actualizado: ' +
+              JSON.stringify(json.data.actualizado),
+            [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+            {cancelable: true},
+          );
         }
       })
       .catch(function (error) {

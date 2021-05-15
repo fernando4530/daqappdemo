@@ -366,7 +366,7 @@ class App extends Component {
             <View style={{marginTop: 10, marginBottom: 10}}>
               <Button
                 color={constants.BLUE_COLOR}
-                title="Get Recorridos"
+                title="Busqueda ID"
                 onPress={() => this.getRecorridos()}
               />
             </View>
