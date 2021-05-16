@@ -22,6 +22,10 @@ class APIService {
       .then((json) => {
         if (json.error) {
           Alert.alert(json.error.msg);
+          return json.error.msg == 'Must Login first' ||
+            json.error.msg == 'Authorization Bearer Error'
+            ? true
+            : false;
         } else {
           Alert.alert(
             'API DAQ',
@@ -61,13 +65,13 @@ class APIService {
       })
       .catch(function (error) {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
-        const mje_error = error;
         Alert.alert(
           'API DAQ ERROR',
-          'Error: \n' + mje_error,
+          'Error: \n' + error,
           [{text: 'OK', onPress: () => console.log('OK Pressed')}],
           {cancelable: true},
         );
+        return true;
       });
   }
 
@@ -85,6 +89,10 @@ class APIService {
       .then((json) => {
         if (json.error) {
           Alert.alert(json.error.msg);
+          return json.error.msg == 'Must Login first' ||
+            json.error.msg == 'Authorization Bearer Error'
+            ? true
+            : false;
         } else {
           Alert.alert(
             'API DAQ',
@@ -114,13 +122,13 @@ class APIService {
       })
       .catch(function (error) {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
-        const mje_error = error;
         Alert.alert(
           'API DAQ ERROR',
-          'Error: \n' + mje_error,
+          'Error: \n' + error,
           [{text: 'OK', onPress: () => console.log('OK Pressed')}],
           {cancelable: true},
         );
+        return true;
       });
   }
 
@@ -137,7 +145,12 @@ class APIService {
       .then((response) => response.json())
       .then((json) => {
         if (json.error) {
+          console.log('OK!');
           Alert.alert(json.error.msg);
+          return json.error.msg == 'Must Login first' ||
+            json.error.msg == 'Authorization Bearer Error'
+            ? true
+            : false;
         } else {
           Alert.alert(
             'API DAQ',
@@ -173,13 +186,13 @@ class APIService {
       })
       .catch(function (error) {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
-        const mje_error = error;
         Alert.alert(
           'API DAQ ERROR',
-          'Error: \n' + mje_error,
+          'Error: \n' + error,
           [{text: 'OK', onPress: () => console.log('OK Pressed')}],
           {cancelable: true},
         );
+        return true;
       });
   }
 
@@ -216,6 +229,10 @@ class APIService {
       .then((json) => {
         if (json.error) {
           Alert.alert(json.error.msg);
+          return json.error.msg == 'Must Login first' ||
+            json.error.msg == 'Authorization Bearer Error'
+            ? true
+            : false;
         } else {
           Alert.alert(
             'API DAQ',
@@ -251,13 +268,13 @@ class APIService {
       })
       .catch(function (error) {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
-        const mje_error = error;
         Alert.alert(
           'API DAQ ERROR',
-          'Error: \n' + mje_error,
+          'Error: \n' + error,
           [{text: 'OK', onPress: () => console.log('OK Pressed')}],
           {cancelable: true},
         );
+        return true;
       });
   }
 
@@ -275,6 +292,10 @@ class APIService {
       .then((json) => {
         if (json.error) {
           Alert.alert(json.error.msg);
+          return json.error.msg == 'Must Login first' ||
+            json.error.msg == 'Authorization Bearer Error'
+            ? true
+            : false;
         } else {
           Alert.alert(
             'API DAQ',
@@ -292,13 +313,49 @@ class APIService {
       })
       .catch(function (error) {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
-        const mje_error = error;
         Alert.alert(
           'API DAQ ERROR',
-          'Error: \n' + mje_error,
+          'Error: \n' + error,
           [{text: 'OK', onPress: () => console.log('OK Pressed')}],
           {cancelable: true},
         );
+        return true;
+      });
+  }
+
+  async excuteEndpoint(url, verb, body) {
+    const athorozationHeader = await HeaderUtil.authHeader();
+    var headers = new Headers();
+    headers.set('Authorization', athorozationHeader.Authorization);
+    headers.set('Content-Type', 'application/json');
+    return fetch(url, {
+      method: verb,
+      headers: headers,
+      body: body ? body : null,
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.error) {
+          Alert.alert(json.error.msg);
+          return json.error.msg == 'Must Login first' ||
+            json.error.msg == 'Authorization Bearer Error'
+            ? true
+            : false;
+        } else {
+          const text = JSON.stringify(json);
+          console.log(text);
+          Alert.alert('API DAQ', JSON.stringify(json));
+        }
+      })
+      .catch(function (error) {
+        console.log('Hubo un problema con la petición Fetch:' + error.message);
+        Alert.alert(
+          'API DAQ',
+          'Error: \n' + error,
+          [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+          {cancelable: true},
+        );
+        return true;
       });
   }
 }

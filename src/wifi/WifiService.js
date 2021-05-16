@@ -1,8 +1,7 @@
+import {Alert, PermissionsAndroid, Platform} from 'react-native';
 import WifiManager from 'react-native-wifi-reborn';
 import SystemSetting from 'react-native-system-setting';
 import * as constants from '../util/constants';
-
-import {Alert, PermissionsAndroid, Platform} from 'react-native';
 
 class WifiService {
   async requestPermisionWifi() {
@@ -36,9 +35,6 @@ class WifiService {
     WifiManager.disconnect();
     this.checkLocation();
     const isWep = false;
-    console.log('conectando a: ');
-    console.log(ssid);
-    console.log(password);
     WifiManager.connectToProtectedSSID(ssid, password, isWep).then(
       () => {
         console.log('Connected successfully!');
@@ -136,7 +132,6 @@ class WifiService {
   checkLocation() {
     SystemSetting.isLocationEnabled().then((enable) => {
       const state = enable ? true : false;
-      console.log('Current location is ' + state);
       if (!state) {
         SystemSetting.switchLocation(() => {
           console.log('switch location successfully');

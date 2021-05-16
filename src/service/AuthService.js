@@ -1,11 +1,12 @@
-import HeaderUtil from '../util/HeaderUtil';
 import {Alert} from 'react-native';
+import HeaderUtil from '../util/HeaderUtil';
 
 const API_URL_LOGIN = 'http://10.123.45.1:3333/api/1_0/login';
 const API_URL_LOGOUT = 'http://10.123.45.1:3333/api/1_0/logout';
 const base64 = require('base-64');
 
 class AuthService {
+
   async login(username, password) {
     var headers = new Headers();
     headers.set(
@@ -29,8 +30,10 @@ class AuthService {
             token: response.token,
           };
           HeaderUtil.storeData(token);
+          return true;
         } else {
           Alert.alert(response.error.msg);
+          return false;
         }
       })
       .catch((err) => {
@@ -57,8 +60,10 @@ class AuthService {
         if (response.text) {
           HeaderUtil.removeValue();
           Alert.alert(response.text);
+          return response.text == 'Logout Successful'? false: true;
         } else {
           Alert.alert(response.error.msg);
+          return false;
         }
       })
       .catch((err) => {
