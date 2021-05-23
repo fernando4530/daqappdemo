@@ -61,6 +61,7 @@ class APIService {
             [{text: 'OK', onPress: () => console.log('OK Pressed')}],
             {cancelable: true},
           );
+          return true;
         }
       })
       .catch(function (error) {
@@ -118,6 +119,7 @@ class APIService {
             [{text: 'OK', onPress: () => console.log('OK Pressed')}],
             {cancelable: true},
           );
+          return true;
         }
       })
       .catch(function (error) {
@@ -182,6 +184,7 @@ class APIService {
             [{text: 'OK', onPress: () => console.log('OK Pressed')}],
             {cancelable: true},
           );
+          return true;
         }
       })
       .catch(function (error) {
@@ -264,6 +267,7 @@ class APIService {
             [{text: 'OK', onPress: () => console.log('OK Pressed')}],
             {cancelable: true},
           );
+          return true;
         }
       })
       .catch(function (error) {
@@ -309,6 +313,7 @@ class APIService {
             [{text: 'OK', onPress: () => console.log('OK Pressed')}],
             {cancelable: true},
           );
+          return true;
         }
       })
       .catch(function (error) {
@@ -345,6 +350,7 @@ class APIService {
           const text = JSON.stringify(json);
           console.log(text);
           Alert.alert('API DAQ', JSON.stringify(json));
+          return true;
         }
       })
       .catch(function (error) {

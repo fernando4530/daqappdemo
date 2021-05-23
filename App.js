@@ -33,7 +33,9 @@ class App extends Component {
     this.state = {
       color: constants.GRAY_COLOR,
     };
+  }
 
+  componentWillUnmount() {
     HeaderUtil.removeValue();
   }
 

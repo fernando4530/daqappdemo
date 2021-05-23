@@ -54,8 +54,8 @@ export class ApiTestSection extends Component {
 
   handleLangChange = (result) => {
     result
-      ? this.props.onSelectLanguage(constants.GRAY_COLOR)
-      : this.props.onSelectLanguage(constants.BLUE_COLOR);
+      ? this.props.onSelectLanguage(constants.BLUE_COLOR)
+      : this.props.onSelectLanguage(constants.GRAY_COLOR);
   };
 
   render() {
