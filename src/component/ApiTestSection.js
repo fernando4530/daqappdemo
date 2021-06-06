@@ -19,27 +19,27 @@ export class ApiTestSection extends Component {
 
   async getTicket() {
     const result = await APIService.getTicket();
-    this.handleLangChange(result);
+    this.handleColorSetStatus(result);
   }
 
   async getPosicion() {
     const result = await APIService.getPosicion();
-    this.handleLangChange(result);
+    this.handleColorSetStatus(result);
   }
 
   async getConfiguracion() {
     const result = await APIService.getConfiguracion();
-    this.handleLangChange(result);
+    this.handleColorSetStatus(result);
   }
 
   async setConfiguracion() {
     const result = await APIService.setConfiguracion();
-    this.handleLangChange(result);
+    this.handleColorSetStatus(result);
   }
 
   async getRecorridos() {
     const result = await APIService.getRecorridos();
-    this.handleLangChange(result);
+    this.handleColorSetStatus(result);
   }
 
   async endpoint() {
@@ -49,13 +49,13 @@ export class ApiTestSection extends Component {
       custumVerb,
       customBody,
     );
-    this.handleLangChange(result);
+    this.handleColorSetStatus(result);
   }
 
-  handleLangChange = (result) => {
+  handleColorSetStatus = (result) => {
     result
-      ? this.props.onSelectLanguage(constants.BLUE_COLOR)
-      : this.props.onSelectLanguage(constants.GRAY_COLOR);
+      ? this.props.handleColorSetStatus(constants.BLUE_COLOR)
+      : this.props.handleColorSetStatus(constants.GRAY_COLOR);
   };
 
   render() {

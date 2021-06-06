@@ -26,13 +26,14 @@ export class Login extends Component {
   }
 
   async checkIsEnabledWifi() {
-    WifiService.checkIsEnabledWifi();
+    const result = await WifiService.checkIsEnabledWifi();
+    result ? this.props.onTurnOffWifi(result) : this.props.onTurnOffWifi(false);
   }
 
   handleLangChange = (result) => {
     result
-      ? this.props.onSelectLanguage(constants.BLUE_COLOR)
-      : this.props.onSelectLanguage(constants.GRAY_COLOR);
+      ? this.props.handleColorSetStatus(constants.BLUE_COLOR)
+      : this.props.handleColorSetStatus(constants.GRAY_COLOR);
   };
 
   render() {

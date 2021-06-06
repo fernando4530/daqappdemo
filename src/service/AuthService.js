@@ -6,7 +6,6 @@ const API_URL_LOGOUT = 'http://10.123.45.1:3333/api/1_0/logout';
 const base64 = require('base-64');
 
 class AuthService {
-
   async login(username, password) {
     var headers = new Headers();
     headers.set(
@@ -38,6 +37,7 @@ class AuthService {
       })
       .catch((err) => {
         console.log(err);
+        Alert.alert('Error Login', err.message);
       });
   }
 
@@ -60,7 +60,7 @@ class AuthService {
         if (response.text) {
           HeaderUtil.removeValue();
           Alert.alert(response.text);
-          return response.text == 'Logout Successful'? false: true;
+          return response.text == 'Logout Successful' ? false : true;
         } else {
           Alert.alert(response.error.msg);
           return false;
@@ -68,6 +68,7 @@ class AuthService {
       })
       .catch((err) => {
         console.log(err);
+        Alert.alert('Error Logout', err.message);
       });
   }
 }

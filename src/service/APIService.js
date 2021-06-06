@@ -68,7 +68,7 @@ class APIService {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
         Alert.alert(
           'API DAQ ERROR',
-          'Error: \n' + error,
+          error.message,
           [{text: 'OK', onPress: () => console.log('OK Pressed')}],
           {cancelable: true},
         );
@@ -126,7 +126,7 @@ class APIService {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
         Alert.alert(
           'API DAQ ERROR',
-          'Error: \n' + error,
+          error.message,
           [{text: 'OK', onPress: () => console.log('OK Pressed')}],
           {cancelable: true},
         );
@@ -191,7 +191,7 @@ class APIService {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
         Alert.alert(
           'API DAQ ERROR',
-          'Error: \n' + error,
+          error.message,
           [{text: 'OK', onPress: () => console.log('OK Pressed')}],
           {cancelable: true},
         );
@@ -274,7 +274,7 @@ class APIService {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
         Alert.alert(
           'API DAQ ERROR',
-          'Error: \n' + error,
+          error.message,
           [{text: 'OK', onPress: () => console.log('OK Pressed')}],
           {cancelable: true},
         );
@@ -320,7 +320,7 @@ class APIService {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
         Alert.alert(
           'API DAQ ERROR',
-          'Error: \n' + error,
+          error.message,
           [{text: 'OK', onPress: () => console.log('OK Pressed')}],
           {cancelable: true},
         );
@@ -357,7 +357,7 @@ class APIService {
         console.log('Hubo un problema con la petición Fetch:' + error.message);
         Alert.alert(
           'API DAQ',
-          'Error: \n' + error,
+          error.message,
           [{text: 'OK', onPress: () => console.log('OK Pressed')}],
           {cancelable: true},
         );

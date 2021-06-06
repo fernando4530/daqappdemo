@@ -142,7 +142,7 @@ class WifiService {
 
   async checkIsEnabledWifi() {
     const result = await this.getWifiStatus();
-    result
+    return result
       ? this.switchWifiDevice()
       : Alert.alert('WIFI: Ya se encuentra deshabilitado');
   }

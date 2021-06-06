@@ -32,6 +32,7 @@ class App extends Component {
     super(props);
     this.state = {
       color: constants.GRAY_COLOR,
+      turnOffWifi: true,
     };
   }
 
@@ -39,8 +40,13 @@ class App extends Component {
     HeaderUtil.removeValue();
   }
 
-  handleLanguage = (langValue) => {
+  handleColorSetStatus = (langValue) => {
     this.setState({color: langValue});
+  };
+
+  handleWifiSetStatus = (langValue) => {
+    console.log('actualizando app: ' + langValue);
+    this.setState({turnOffWifi: langValue});
   };
 
   render() {
@@ -57,12 +63,16 @@ class App extends Component {
           </Text>
         </ImageBackground>
         <View style={styles.body}>
-          <WifiSection></WifiSection>
+          <WifiSection
+            onTurnOffWifi={this.handleWifiSetStatus}
+            statusWifi={this.state.turnOffWifi}></WifiSection>
 
-          <LoginSection onSelectLanguage={this.handleLanguage}></LoginSection>
+          <LoginSection
+            onTurnOffWifi={this.handleWifiSetStatus}
+            handleColorSetStatus={this.handleColorSetStatus}></LoginSection>
 
           <ApiTestSection
-            onSelectLanguage={this.handleLanguage}
+            handleColorSetStatus={this.handleColorSetStatus}
             color={this.state.color}></ApiTestSection>
         </View>
       </ScrollView>

@@ -65,6 +65,22 @@ export class WifiSection extends Component {
     });
   };
 
+  async refreshStatus() {
+    const status = await WifiService.getWifiStatus();
+    console.log(status);
+    this.setState({switchValue: status});
+  }
+
+  componentDidUpdate(nextProps) {
+    const {statusWifi} = this.props;
+    if (nextProps.statusWifi !== statusWifi) {
+      if (!statusWifi) {
+        this.setState({switchValue: false});
+        this.props.onTurnOffWifi(true);
+      }
+    }
+  }
+
   render() {
     return (
       <>
@@ -102,6 +118,13 @@ export class WifiSection extends Component {
               thumbColor={this.state.switchValue ? '#3bff5a' : '#f4f3f4'}
               onValueChange={this.toggleSwitchWifi}
               value={this.state.switchValue}
+            />
+          </View>
+          <View style={{marginTop: 20, marginBottom: 10}}>
+            <Button
+              color={constants.GREEN_COLOR}
+              title="Refresh"
+              onPress={() => this.refreshStatus()}
             />
           </View>
         </View>
